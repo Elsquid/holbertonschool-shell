@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#
+# /etc/init.d/11-manage_my_process
+
+file="/var/run/my_process.pid"
+process="./manage_my_process"
+
+function start()
+{
+	$process &
+	echo $$ > $file
+	echo "manage_my_process started"
+}
+
+function stop()
+{
+	pkill -f $process
+	sudo rm $file
+	echo "manage_my_process stopped"
+}
+
+function restart()
+{
+	pkill -f $process
+	sudo rm $file
+	$process &
+	echo $$ > $file
+	echo "manage_my_process restarted"
+}
+
+case ${1} in
+	"start")
+		start;;
+	"restart")
+		restart;;
+	"stop")
+		stop;;
+	*)
+		echo "Usage: manage_my_process {start|stop|restart}"
+esac
